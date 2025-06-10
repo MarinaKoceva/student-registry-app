@@ -28,3 +28,14 @@ jobs:
 
       - name: 🧪 Run tests using npm script
         run: npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: 🚀 Deploy to Render
+        run: |
+          curl -X POST https://api.render.com/deploy/${{ secrets.SERVICE_ID }} \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer ${{ secrets.RENDER_TOKEN }}'
